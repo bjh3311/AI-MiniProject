@@ -3,6 +3,10 @@ from typing_extensions import Annotated
 from langgraph.graph import add_messages
 
 class TechTrendState(TypedDict):
+
+    # 검색된 키워드 목록
+    keywords: List[str] 
+
     # 검색 및 데이터 수집
     search_results: List[Dict]
     

@@ -2,6 +2,7 @@ from langgraph.graph import StateGraph
 from typing import Dict
 
 from models.state import TechTrendState
+from agents.keywords_agent import extract_keywords
 from agents.search_agent import web_search
 from agents.summary_agent import summarize_search_results
 from agents.analysis_agent import analyze_trends
@@ -14,6 +15,7 @@ def create_tech_trend_workflow() -> StateGraph:
     workflow = StateGraph(TechTrendState)
     
     # 노드 추가
+    workflow.add_node("KeywordsSearch", extract_keywords)
     workflow.add_node("WebSearch", web_search)
     workflow.add_node("SearchSummarization", summarize_search_results)
     workflow.add_node("Analysis", analyze_trends)
