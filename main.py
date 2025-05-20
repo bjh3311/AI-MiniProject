@@ -1,7 +1,6 @@
 from graph.workflow import create_tech_trend_workflow
 from models.state import TechTrendState
 import json
-import os
 import logging
 
 # 로깅 설정

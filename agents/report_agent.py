@@ -1,72 +1,224 @@
 from typing import Dict
-from langchain_openai import ChatOpenAI
+import os
+from datetime import datetime
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# 한글 폰트 등록 (Windows에 있는 맑은 고딕 사용)
+pdfmetrics.registerFont(TTFont('Malgun', 'C:/Windows/Fonts/malgun.ttf'))
 
 def generate_report(state: Dict) -> Dict:
     """Report 노드에서 AI 미래 기술 트렌드 분석 보고서를 생성하는 함수"""
     
-    # LLM 초기화
-    llm = ChatOpenAI(temperature=0.7, model="gpt-4")
-    
     # 상태에서 데이터 가져오기
-    summary = state.get("summary", {})
-    trend_metrics = state.get("trend_metrics", {})
     top_trends = state.get("top_trends", [])
-    trend_analysis = state.get("trend_analysis", {})
+    summary_data = state.get("summary", [])
+
+    # 기본 PDF 파일 경로
+    output_dir = os.path.join(os.getcwd(), "reports")
+    os.makedirs(output_dir, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    pdf_filename = os.path.join(output_dir, f"AI_Tech_Trends_Report_{timestamp}.pdf")
     
-    # 프롬프트 구성
-    report_prompt = f"""
-    # AI 미래 기술 트렌드 분석 보고서
+    # PDF 생성
+    create_pdf_report(pdf_filename, top_trends, summary_data)
     
-    ## 개요
-    당신은 기술 트렌드 분석 전문가입니다. AI를 포함한 미래 기술을 분석하고, 향후 5년 이내 기업에서 관심있게 봐야할 AI 트렌드 예측 보고서를 작성해 주세요.
-    
-    ## 분석 기반 데이터
-    - 검색 결과 요약: {summary}
-    - 트렌드 지표: {trend_metrics}
-    - 상위 트렌드: {top_trends}
-    - 트렌드 분석: {trend_analysis}
-    
-    ## 트렌드 평가 논리
-    다음 기준을 활용하여 향후 5년 AI 트렌드를 평가해 주세요:
-    
-    1. **연구 활동**: 관련 논문 출판 수 증가 추세
-    2. **시장 반응**: 투자 규모 및 성장률
-    3. **기업 채택**: 주요 기업들의 기술 도입 속도
-    4. **검색 관심도**: 검색 키워드 트렌드
-    5. **인재 수요**: 관련 직무 채용 증가율
-    
-    ## 보고서 구성 요구사항
-    1. **주요 AI 트렌드 요약 (Executive Summary)**
-       - 상위 5개 AI 트렌드와 각 트렌드별 중요도
-       
-    2. **트렌드별 심층 분석 (각 트렌드당)**
-       - 현재 기술 발전 상황
-       - 발전 속도 및 향후 전망
-       - 산업별 영향 (3-5개 주요 산업)
-       - 기회 및 도전 과제
-       
-    3. **기업 적용 전략**
-       - 기업 규모별 접근 전략 (대기업 vs. 중소기업)
-       - 단계별 도입 로드맵 제안
-       - 투자 우선순위 제안
-       
-    4. **결론 및 제언**
-       - 종합적 관점에서의 AI 트렌드 전망
-       - 기업이 취해야 할 핵심 액션 아이템
-    
-    ## 형식 가이드라인
-    - 객관적이고 데이터에 근거한 내용
-    - 전문적이면서도 이해하기 쉬운 언어
-    - 각 섹션마다 명확한 소제목
-    - 분석 결과를 뒷받침하는 근거 포함
-    - 전체 보고서 분량: 약 2,000단어
-    
-    이 보고서는 기술 의사결정자들이 향후 AI 투자 및 전략 방향을 설정하는 데 도움이 되는 실용적 가이드가 되어야 합니다.
+    print(f"PDF 보고서가 생성되었습니다: {pdf_filename}")
+    return state
+
+def create_pdf_report(pdf_filename, top_trends, summary_data):
     """
+    ReportLab을 사용하여 PDF 보고서 생성
+    """
+    # 스타일 정의 - 이름 충돌 방지를 위해 Custom 접두사 사용
+    styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(name='CustomTitle', 
+                             fontName='Malgun', 
+                             fontSize=16, 
+                             alignment=1, 
+                             spaceAfter=20))
+    styles.add(ParagraphStyle(name='CustomHeading', 
+                             fontName='Malgun', 
+                             fontSize=14, 
+                             spaceAfter=10))
+    styles.add(ParagraphStyle(name='CustomSubHeading', 
+                             fontName='Malgun', 
+                             fontSize=12,
+                             spaceAfter=8))
+    styles.add(ParagraphStyle(name='CustomNormal', 
+                             fontName='Malgun', 
+                             fontSize=10, 
+                             spaceAfter=10))
+    styles.add(ParagraphStyle(name='CustomBold',
+                             fontName='Malgun',
+                             fontSize=10,
+                             spaceAfter=10,
+                             bold=True))
     
-    # 보고서 생성
-    report_response = llm.invoke(report_prompt)
-    report = report_response.content
+    # PDF 문서 생성
+    doc = SimpleDocTemplate(pdf_filename, pagesize=A4)
+    story = []
     
-    # 상태 업데이트
-    return {"report": report}
+    # 표지 추가
+    title = Paragraph('AI 미래 기술 트렌드 분석 보고서', styles['CustomTitle'])
+    story.append(title)
+    
+    date = Paragraph(f'작성일: {datetime.now().strftime("%Y년 %m월 %d일")}', styles['CustomNormal'])
+    story.append(date)
+    story.append(Spacer(1, 30))
+    
+    # 목차 추가
+    toc_title = Paragraph('목차', styles['CustomHeading'])
+    story.append(toc_title)
+    
+    toc_items = []
+    toc_items.append(['1. 개요', '3'])
+    toc_items.append(['2. 상위 AI 트렌드 요약', '4'])
+    
+    # 트렌드별 목차 항목 추가
+    for i, trend in enumerate(top_trends, 3):
+        toc_items.append([f"{i}. {trend['keyword']} 상세 분석", str(i+2)])
+    
+    # 목차 테이블
+    toc = Table(toc_items, colWidths=[350, 50])
+    toc.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Malgun'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+    ]))
+    
+    story.append(toc)
+    story.append(Spacer(1, 30))
+    
+    # 개요 섹션 추가 (페이지 나누기)
+    story.append(Spacer(1, 1))
+    story.append(Paragraph('1. 개요', styles['CustomHeading']))
+    
+    overview_text = """
+    본 보고서는 최신 AI 기술 트렌드에 대한 종합적인 분석 결과를 제공합니다. 
+    뉴스 기사와 인터넷 자료를 바탕으로 주요 AI 기술 트렌드를 식별하고, 
+    각 트렌드의 시장 성장성, 기업 채택률, 기술 성숙도, 혁신 잠재력, 지속가능성을 평가했습니다.
+    
+    이를 통해 향후 5년 내 기업과 조직이 주목해야 할 AI 기술 방향성을 제시합니다.
+    """
+    story.append(Paragraph(overview_text, styles['CustomNormal']))
+    story.append(Spacer(1, 20))
+    
+    # 상위 AI 트렌드 요약 테이블 (새 페이지)
+    story.append(Spacer(1, 1))
+    story.append(Paragraph('2. 상위 AI 트렌드 요약', styles['CustomHeading']))
+    
+    # 트렌드 테이블 데이터
+    table_data = [['키워드', '점수', '주요 이유']]
+    for trend in top_trends:
+        table_data.append([
+            trend['keyword'], 
+            str(trend['score']), 
+            trend['reason']
+        ])
+    
+    # 테이블 생성
+    table = Table(table_data, colWidths=[100, 50, 300])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightblue),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Malgun'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+    
+    story.append(table)
+    story.append(Spacer(1, 30))
+    
+    # 각 트렌드별 상세 페이지 추가
+    for i, trend in enumerate(top_trends, 3):
+        # 페이지 나누기 및 섹션 제목
+        story.append(Spacer(1, 1))
+        trend_title = Paragraph(f"{i}. {trend['keyword']} 상세 분석", styles['CustomHeading'])
+        story.append(trend_title)
+        story.append(Spacer(1, 10))
+        
+        # 1. 트렌드 이름과 총점
+        score_text = Paragraph(f"<b>총점:</b> {trend['score']}/10", styles['CustomBold'])
+        story.append(score_text)
+        story.append(Spacer(1, 10))
+        
+        # 2. 트렌드 요약 - summary_data에서 해당 키워드의 요약 찾기
+        summary_text = "해당 키워드에 대한 요약 정보가 없습니다."
+        for summary_item in summary_data:
+            if summary_item.get("keyword") == trend["keyword"]:
+                summary_text = summary_item.get("summary", summary_text)
+                break
+        
+        summary_title = Paragraph("2.1 트렌드 요약", styles['CustomSubHeading'])
+        story.append(summary_title)
+        story.append(Paragraph(summary_text, styles['CustomNormal']))
+        story.append(Spacer(1, 10))
+        
+        # 3. 항목별 점수
+        detail_title = Paragraph("2.2 항목별 평가 점수", styles['CustomSubHeading'])
+        story.append(detail_title)
+        
+        if "details" in trend:
+            details = trend["details"]
+            detail_data = [
+                ['평가 항목', '점수 (0-10)'],
+                ['시장 성장성', str(details.get('market_growth', 'N/A'))],
+                ['기업 채택률', str(details.get('enterprise_adoption', 'N/A'))],
+                ['기술 성숙도', str(details.get('tech_maturity', 'N/A'))],
+                ['혁신 잠재력', str(details.get('innovation_potential', 'N/A'))],
+                ['지속가능성', str(details.get('sustainability', 'N/A'))]
+            ]
+            
+            detail_table = Table(detail_data, colWidths=[150, 100])
+            detail_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+                ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, -1), 'Malgun'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black)
+            ]))
+            story.append(detail_table)
+            story.append(Spacer(1, 15))
+            
+        # 4. 분석 (reason 내용 포함)
+        analysis_title = Paragraph("2.3 분석", styles['CustomSubHeading'])
+        story.append(analysis_title)
+        analysis_text = trend.get('reason', '분석 내용이 제공되지 않았습니다.')
+        story.append(Paragraph(analysis_text, styles['CustomNormal']))
+        story.append(Spacer(1, 15))
+        
+        # 5. 총평 (간단한 요약 및 권장사항)
+        conclusion_title = Paragraph("2.4 총평", styles['CustomSubHeading'])
+        story.append(conclusion_title)
+        
+        # 총점 기반 평가 문구
+        score = float(trend.get('score', 0))
+        if score >= 8.5:
+            conclusion = f"{trend['keyword']}는 매우 유망한 기술 트렌드로, 기업들이 우선적으로 투자하고 도입을 검토해야 합니다. 빠른 속도로 발전하고 있으며, 경쟁 우위를 확보하기 위해 즉각적인 관심이 필요합니다."
+        elif score >= 7.0:
+            conclusion = f"{trend['keyword']}는 향후 중요한 역할을 할 것으로 예상되는 기술 트렌드입니다. 전략적 계획에 포함시키고 준비를 시작하는 것이 좋습니다."
+        elif score >= 5.0:
+            conclusion = f"{trend['keyword']}는 잠재력이 있지만 더 지켜볼 필요가 있는 기술 트렌드입니다. 현재 단계에서는 모니터링하며 적절한 진입 시점을 탐색하는 것이 권장됩니다."
+        else:
+            conclusion = f"{trend['keyword']}는 아직 초기 단계이거나 산업 적용성이 제한적일 수 있습니다. 장기적인 관점에서 지켜보는 것이 좋습니다."
+        
+        story.append(Paragraph(conclusion, styles['CustomNormal']))
+        story.append(Spacer(1, 30))
+    
+    # PDF 빌드
+    doc.build(story)
