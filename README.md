@@ -24,18 +24,18 @@ SKALA 1기 과정 AI 서비스 미니 프로젝트입니다
 ---
 
 ## 🗂️ 프로젝트 구조
-AI-MiniProject/
-├── agents/
-│   ├── summary_agent.py          # 검색 결과 요약을 처리하는 에이전트
-│   ├── report_agent.py           # PDF 보고서를 생성하는 에이전트
-│   └── analysis_agent.py         # 트렌드 분석을 처리하는 에이전트
-├── main.py                       # 워크플로우 실행 및 초기 상태 설정
-├── models/
-│   └── state.py                  # 상태 관리용 데이터 모델 정의
-├── report_generation_prompt.txt  # 트렌드 분석 프롬프트 템플릿
-├── reports/                      # 생성된 PDF 보고서 저장 디렉토리
-└── README.md                     # 프로젝트 설명 파일
-
+AI-MiniProject/  
+├── agents/  
+│   ├── summary_agent.py          # 검색 결과 요약을 처리하는 에이전트  
+│   ├── report_agent.py           # PDF 보고서를 생성하는 에이전트    
+│   └── analysis_agent.py         # 트렌드 분석을 처리하는 에이전트    
+├── main.py                       # 워크플로우 실행 및 초기 상태 설정    
+├── models/  
+│   └── state.py                  # 상태 관리용 데이터 모델 정의  
+├── report_generation_prompt.txt  # 트렌드 분석 프롬프트 템플릿  
+├── reports/                      # 생성된 PDF 보고서 저장 디렉토리  
+└── README.md                     # 프로젝트 설명 파일  
+  
 ---
 
 ## ⚙️ 설치 및 실행 방법
