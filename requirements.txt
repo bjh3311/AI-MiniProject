@@ -1,0 +1,7 @@
+langchain-openai==0.3.16
+reportlab==4.4.1
+python-dotenv==1.1.0
+openai==1.75.0
+beautifulsoup4==4.13.4
+requests==2.32.3
+langgraph==0.4.3

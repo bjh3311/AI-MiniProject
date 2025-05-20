@@ -53,6 +53,10 @@ Python 3.10 이상이 필요합니다. 아래 명령어를 실행하여 필요�
 ### 2. 환경 변수 설정
 OpenAI API 키를 사용하기 위해 .env 파일을 생성하고 다음 내용을 추가하세요:
 
+NAVER_CLIENT_ID = YOUR-KEY
+NAVER_CLIENT_SECRET = YOUR-KEY
+OPENAI_API_KEY = YOUR-KEY
+
 ### 3. 프로젝트 실행
 main.py를 실행하여 워크플로우를 시작합니다:
 
