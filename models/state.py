@@ -11,8 +11,7 @@ class TechTrendState(TypedDict):
     search_results: List[Dict]
     
     # 요약 및 분석
-    summary: Dict[str, str]  # 검색 결과 요약 정보
-    trend_metrics: Dict[str, float]
+    summary: List[Dict]  # 검색 결과 요약 정보
     
     # 분석 결과
     top_trends: List[Dict]  # 상위 AI 트렌드 목록
