@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 def main():
     """기술 트렌드 분석 애플리케이션의 메인 엔트리 포인트"""
     
-    logger.info("AI 미래 기술 트렌드 분석 시작")
     
     # 워크플로우 생성
     tech_trend_workflow = create_tech_trend_workflow()

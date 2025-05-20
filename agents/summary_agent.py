@@ -16,8 +16,8 @@ def summarize_search_results(state: Dict) -> Dict:
     
     # 요약 프롬프트 생성
     summary_prompt = f"""
-    당신은 기술 트렌드 분석 전문가입니다. 다음의 AI 기술 트렌드에 관한 검색 결과를 검토하고 
-    주요 영역별로 포괄적인 요약을 제공해주세요.
+    당신은 기술 트렌드 분석 전문가입니다. 다음의 기술 뉴스에 관한 검색 결과를 바탕으로 
+    포괄적인 요약을 제공해주세요.
     
     검색 결과:
     {combined_results}
@@ -44,3 +44,16 @@ def summarize_search_results(state: Dict) -> Dict:
     
     # 상태 업데이트
     return {"summary": summary_dict}
+
+if __name__ == "__main__":
+    # 테스트용 상태
+    test_state = {
+        "search_results": [
+            {"query": "LLM", "result": "LLM은 대규모 언어 모델을 의미합니다."},
+            {"query": "생성 인공지능", "result": "생성 인공지능은 새로운 콘텐츠를 생성하는 AI입니다."}
+        ]
+    }
+    
+    # 요약 실행
+    summary = summarize_search_results(test_state)
+    print(summary)
