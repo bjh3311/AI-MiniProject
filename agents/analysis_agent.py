@@ -3,10 +3,11 @@ from langchain_openai import ChatOpenAI
 import json
 
 def analyze_trends(state: Dict) -> Dict:
-    """analysis 노드 - 요약 데이터를 분석하여 트렌드 및 지표 식별"""
+    """analysis 노드 - 요약 데이터를 분석하여 
+    해당 트렌드 장점 및 주의점 지표 식별"""
     
     # LLM 초기화
-    llm = ChatOpenAI(temperature=0.1)
+    llm = ChatOpenAI(temperature=0.1, model="gpt-4")
     
     # 상태에서 요약 데이터 가져오기
     summary = state.get("summary", {})

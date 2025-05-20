@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict
 from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 
