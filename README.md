@@ -24,9 +24,17 @@ SKALA 1기 과정 AI 서비스 미니 프로젝트입니다
 ---
 
 ## 🗂️ 프로젝트 구조
-AI-MiniProject/ ├── agents/ │ ├── summary_agent.py # 검색 결과 요약을 처리하는 에이전트 │ ├── report_agent.py # PDF 보고서를 생성하는 에이전트 │ └── analysis_agent.py # 트렌드 분석을 처리하는 에이전트 ├── main.py # 워크플로우 실행 및 초기 상태 설정 ├── models/ │ └── state.py # 상태 관리용 데이터 모델 정의 ├── report_generation_prompt.txt # 트렌드 분석 프롬프트 템플릿 ├── reports/ # 생성된 PDF 보고서 저장 디렉토리 └── README.md 
-
-# 프로젝트 설명 파일
+AI-MiniProject/
+├── agents/
+│   ├── summary_agent.py          # 검색 결과 요약을 처리하는 에이전트
+│   ├── report_agent.py           # PDF 보고서를 생성하는 에이전트
+│   └── analysis_agent.py         # 트렌드 분석을 처리하는 에이전트
+├── main.py                       # 워크플로우 실행 및 초기 상태 설정
+├── models/
+│   └── state.py                  # 상태 관리용 데이터 모델 정의
+├── report_generation_prompt.txt  # 트렌드 분석 프롬프트 템플릿
+├── reports/                      # 생성된 PDF 보고서 저장 디렉토리
+└── README.md                     # 프로젝트 설명 파일
 
 ---
 
@@ -35,9 +43,29 @@ AI-MiniProject/ ├── agents/ │ ├── summary_agent.py # 검색 결과
 ### 1. **필수 라이브러리 설치**
 Python 3.10 이상이 필요합니다. 아래 명령어를 실행하여 필요한 라이브러리를 설치하세요:
 ```bash
-pip install -r requirements.txt
-
 2. 환경 변수 설정
 OpenAI API 키를 사용하기 위해 .env 파일을 생성하고 다음 내용을 추가하세요:
 
-OPENAI_API_KEY=your_openai_api_key
+3. 프로젝트 실행
+main.py를 실행하여 워크플로우를 시작합니다:
+
+📊 PDF 보고서 예시
+보고서 구조
+표지
+제목: "AI 미래 기술 트렌드 분석 보고서"
+작성일: 현재 날짜
+목차
+개요, 상위 트렌드 요약, 각 트렌드별 상세 분석
+개요
+프로젝트의 목적과 분석 방법 설명
+상위 트렌드 요약
+키워드, 점수, 주요 이유를 포함한 테이블
+각 트렌드별 상세 분석
+트렌드 이름과 총점
+트렌드 요약
+항목별 점수
+분석 내용
+총평
+🛡️ 주의사항
+OpenAI API 호출 시 토큰 제한(예: 8192 토큰)을 초과하지 않도록 본문을 분할하여 처리합니다.
+PDF 생성 시 한글 폰트(맑은 고딕)를 사용하므로, Windows 환경에서 실행해야 합니다. 다른 OS에서는 폰트를 변경해야 할 수 있습니다.
