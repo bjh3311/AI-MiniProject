@@ -1,5 +1,4 @@
 from langgraph.graph import StateGraph
-from typing import Dict
 
 from models.state import TechTrendState
 from agents.keywords_agent import extract_keywords

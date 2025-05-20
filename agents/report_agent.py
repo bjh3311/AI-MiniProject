@@ -29,8 +29,6 @@ def generate_report(state: Dict) -> Dict:
     
     # PDF 생성
     create_pdf_report(pdf_filename, top_trends, summary_data)
-    
-    print(f"PDF 보고서가 생성되었습니다: {pdf_filename}")
     return state
 
 def create_pdf_report(pdf_filename, top_trends, summary_data):
@@ -67,7 +65,7 @@ def create_pdf_report(pdf_filename, top_trends, summary_data):
     story = []
     
     # 표지 추가
-    title = Paragraph('AI 미래 기술 트렌드 분석 보고서', styles['CustomTitle'])
+    title = Paragraph('미래 기술 트렌드 분석 보고서', styles['CustomTitle'])
     story.append(title)
     
     date = Paragraph(f'작성일: {datetime.now().strftime("%Y년 %m월 %d일")}', styles['CustomNormal'])
@@ -120,10 +118,18 @@ def create_pdf_report(pdf_filename, top_trends, summary_data):
     # 트렌드 테이블 데이터
     table_data = [['키워드', '점수', '주요 이유']]
     for trend in top_trends:
+        # 주요 이유 텍스트 길이 제한 (150자 이내로)
+        reason_text = trend.get('reason', '')
+        if len(reason_text) > 150:
+            reason_text = reason_text[:147] + '...'
+        
+        # Paragraph 객체를 사용하여 자동 줄바꿈 처리
+        reason_paragraph = Paragraph(reason_text, styles['CustomNormal'])
+        
         table_data.append([
             trend['keyword'], 
             str(trend['score']), 
-            trend['reason']
+            reason_paragraph
         ])
     
     # 테이블 생성
