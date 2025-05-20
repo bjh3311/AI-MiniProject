@@ -21,12 +21,13 @@ def create_tech_trend_workflow() -> StateGraph:
     workflow.add_node("Report", generate_report)
     
     # 엣지 정의
+    workflow.add_edge("KeywordsSearch", "WebSearch")
     workflow.add_edge("WebSearch", "SearchSummarization")
     workflow.add_edge("SearchSummarization", "Analysis")
     workflow.add_edge("Analysis", "Report")
     
     # 시작점과 종료점 설정
-    workflow.set_entry_point("WebSearch")
+    workflow.set_entry_point("KeywordsSearch")
     workflow.set_finish_point("Report")
     
     return workflow.compile()

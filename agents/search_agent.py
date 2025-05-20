@@ -23,9 +23,9 @@ def web_search(state: Dict) -> Dict:
     if not client_id or not client_secret:
         raise Exception("NAVER_CLIENT_ID 또는 NAVER_CLIENT_SECRET이 설정되지 않았습니다.")
     
-    num_links = 10 # 가져올 뉴스의 개수
+    num_links = 5 # 가져올 뉴스의 개수
     search_results = []
-
+    
     # 각 키워드에 대해 네이버 뉴스 API를 호출하여 링크를 가져오고 본문을 넣는다
     for query in keywords:
         # 네이버 뉴스 API 요청
@@ -49,6 +49,7 @@ def web_search(state: Dict) -> Dict:
                     "link": link
                 })
 
+
         for link in filtered_links:
             # 링크에서 기사 본문 추출
             content = get_news_content(link["link"])
@@ -66,6 +67,7 @@ def web_search(state: Dict) -> Dict:
             })
                 
     state["search_results"] = search_results        
+
     # 상태 업데이트
     return state
 

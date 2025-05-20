@@ -9,7 +9,7 @@ load_dotenv()
 
 def extract_keywords(state: Dict) -> Dict:
     """
-    LLM을 사용하여 향후 5년 이내 기업이 관심을 가져야 할 AI 트렌드 키워드 10개를 생성하는 함수
+    LLM을 사용하여 향후 5년 이내 기업이 관심을 가져야 할 AI 트렌드 키워드 5개를 생성하는 함수
     LangGraph의 노드로 동작하며, TechTrendState의 keywords 필드를 업데이트합니다.
     """
     # LLM 모델 초기화 (OpenAI 모델 사용)
